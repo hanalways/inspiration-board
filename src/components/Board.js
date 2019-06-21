@@ -18,9 +18,23 @@ class Board extends Component {
     };
   }
 
+  deleteCard = (id) => {
+    const DELETE_CARD_URL = `https://inspiration-board.herokuapp.com/cards/${id}`;
+
+    axios.delete(DELETE_CARD_URL)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        this.setState({
+          error: error.message,
+        })
+      })
+  }
+
   componentDidMount() {
     const { url, boardName } = this.props;
-    const BOARD_API_URL = `${url}/${boardName}/cards`;
+    const BOARD_API_URL = `${url}${boardName}/cards`;
 
     axios.get(BOARD_API_URL)
       .then((response) => {
@@ -42,6 +56,7 @@ class Board extends Component {
       return <Card 
         card={ card.card }
         key={ card.id }
+        deleteCardCallback={ this.deleteCard }
       />
     });
 

@@ -6,13 +6,17 @@ import './Card.css';
 
 class Card extends Component {
   render() {
+    console.log(this.props);
     const emojiDictionary = require("emoji-dictionary");
-    const { text, emoji } = this.props.card;
+    const { text, emoji, id } = this.props.card;
 
     return (
       <div className="card">
         { text }
         { emoji && emojiDictionary.getUnicode(emoji) }
+        <button 
+          onClick={() => this.props.deleteCardCallback(id)}
+        >Delete</button>
       </div>
     )
   }
@@ -21,6 +25,7 @@ class Card extends Component {
 Card.propTypes = {
   key: PropTypes.number,
   card: PropTypes.object,
+  deleteCardCallback: PropTypes.func,
 };
 
 export default Card;

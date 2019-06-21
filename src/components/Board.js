@@ -18,18 +18,31 @@ class Board extends Component {
     };
   }
 
+  // componentDidUpdate() {
+
+  // }
+
   deleteCard = (id) => {
     const DELETE_CARD_URL = `https://inspiration-board.herokuapp.com/cards/${id}`;
 
     axios.delete(DELETE_CARD_URL)
       .then((response) => {
         console.log(response.data);
+        const newCards = [...this.state.cards];
+        const cardIndex = newCards.findIndex((eachCard) => eachCard.card.id == id);
+        newCards.splice(cardIndex, 1);
+
+        this.setState({
+          cards: newCards,
+        });
       })
       .catch((error) => {
         this.setState({
           error: error.message,
         })
       })
+
+
   }
 
   componentDidMount() {

@@ -8,25 +8,40 @@ import NewCardForm from './NewCardForm';
 import CARD_DATA from '../data/card-data.json';
 
 class Board extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
-      cards: CARD_DATA.cards,
+      cards: [],
+      // url: this.props.url,
+      // boardName: this.props.boardName,
     };
   }
 
-  // componentDidMount() {
-  //   this.setState({
-  //     cards: CARD_DATA.cards,
-  //   });
-  // }
+  componentDidMount() {
+    const { url, boardName } = this.props;
+    const BOARD_API_URL = `${url}/${boardName}/cards`;
+
+    axios.get(BOARD_API_URL)
+      .then((response) => {
+        console.log(response.data);
+        this.setState({
+          cards: response.data,
+        });
+      })
+      .catch((error) => {
+        this.setState({
+          error: error.message,
+        })
+      }) 
+  }
 
   render() {
-    const cardList = this.state.cards.map((card, i) => {
+
+    const cardList = this.state.cards.map((card) => {
       return <Card 
-        card={ card }
-        key={ i }
+        card={ card.card }
+        key={ card.id }
       />
     });
 
@@ -40,7 +55,8 @@ class Board extends Component {
 }
 
 Board.propTypes = {
-
+  url: PropTypes.string,
+  boardName: PropTypes.string,
 };
 
 export default Board;

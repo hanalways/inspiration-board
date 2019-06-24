@@ -5,7 +5,7 @@ import axios from 'axios';
 import './Board.css';
 import Card from './Card';
 import NewCardForm from './NewCardForm';
-import CARD_DATA from '../data/card-data.json';
+// import CARD_DATA from '../data/card-data.json';
 
 class Board extends Component {
   constructor(props) {
@@ -18,9 +18,26 @@ class Board extends Component {
     };
   }
 
-  // componentDidUpdate() {
+  addCard = (card) => {
+    const { url, boardName } = this.props;
+    const POST_CARD_URL = `${url}${boardName}/cards`;
 
-  // }
+    axios.post(POST_CARD_URL, card)
+      .then((response) => {
+        card.id = response.data.card.id;
+
+        const updatedDeck = [...this.state.cards, {card: card} ];
+        this.setState({
+          cards: updatedDeck,
+        });
+      })
+      .catch((error) => {
+        // console.log("AHHHHHHHH")
+        this.setState({
+          error: error.message
+        });
+      })
+  }
 
   deleteCard = (id) => {
     const DELETE_CARD_URL = `https://inspiration-board.herokuapp.com/cards/${id}`;
@@ -41,8 +58,6 @@ class Board extends Component {
           error: error.message,
         })
       })
-
-
   }
 
   componentDidMount() {
@@ -51,7 +66,7 @@ class Board extends Component {
 
     axios.get(BOARD_API_URL)
       .then((response) => {
-        console.log(response.data);
+        console.log(response.data)
         this.setState({
           cards: response.data,
         });
@@ -75,6 +90,7 @@ class Board extends Component {
 
     return (
       <div>
+        <NewCardForm addCardCallback={this.addCard} />
         { cardList }
       </div>
     )
